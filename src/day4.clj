@@ -2,6 +2,7 @@
   (:require [clojure.string :as str])
   (:import (java.security MessageDigest)))
 
+; https://gist.github.com/jizhang/4325757#gistcomment-2196746
 (defn md5 [^String s]
   (let [algorithm (MessageDigest/getInstance "MD5")
         raw (.digest algorithm (.getBytes s))]
