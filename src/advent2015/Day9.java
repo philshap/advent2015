@@ -32,11 +32,11 @@ class Day9 extends Day {
     }
   }
 
-  record Graph(Map<Pair<String, String>, Edge> adjacent) {
+  record Graph(Map<Pair<String, String>, Integer> adjacent) {
     static Graph from(List<String> input) {
       return new Graph(input.stream()
                             .flatMap(Edge::fromLine)
-                            .collect(Collectors.toMap(Edge::fromTo, Function.identity())));
+                            .collect(Collectors.toMap(Edge::fromTo, Edge::distance)));
     }
 
     Set<String> allNodes() {
@@ -53,22 +53,22 @@ class Day9 extends Day {
       this(start, 0, without(allNodes, start));
     }
 
-    List<Path> extend(Graph graph) {
-      return remaining.stream()
-                      .map(next -> graph.adjacent.get(Pair.of(last, next)))
-                      .filter(Objects::nonNull)
-                      .map(edge -> new Path(edge.fromTo.r(), distance + edge.distance, without(remaining, edge.fromTo.r())))
-                      .toList();
+    void extend(Graph graph, Queue<Path> paths) {
+      remaining.stream()
+                      .map(next -> new Path(next,
+                                            distance + graph.adjacent.get(Pair.of(last, next)),
+                                            without(remaining, next)))
+          .forEach(paths::add);
     }
   }
 
-  Path findShortest(PriorityQueue<Path> paths, Graph graph) {
+  Path findShortest(Queue<Path> paths, Graph graph) {
     while (true) {
       Path path = paths.poll();
       if (path.remaining.isEmpty()) {
         return path;
       }
-      paths.addAll(path.extend(graph));
+      path.extend(graph, paths);
     }
   }
 
@@ -81,16 +81,14 @@ class Day9 extends Day {
     return String.valueOf(findShortest(paths, graph).distance);
   }
 
-  Path findLongest(Queue<Path> paths, Graph graph) {
-    Path longest = new Path("", 0, Set.of());
+  int findLongest(Queue<Path> paths, Graph graph) {
+    int longest = 0;
     while (!paths.isEmpty()) {
       Path path = paths.poll();
       if (path.remaining.isEmpty()) {
-        if (path.distance > longest.distance) {
-          longest = path;
-        }
+        longest = Math.max(longest, path.distance);
       }
-      paths.addAll(path.extend(graph));
+      path.extend(graph, paths);
     }
     return longest;
   }
@@ -101,6 +99,6 @@ class Day9 extends Day {
     Set<String> allNodes = graph.allNodes();
     var paths = new LinkedList<Path>();
     allNodes.forEach(node -> paths.add(new Path(node, allNodes)));
-    return String.valueOf(findLongest(paths, graph).distance);
+    return String.valueOf(findLongest(paths, graph));
   }
 }
