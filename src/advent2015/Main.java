@@ -30,7 +30,7 @@ public class Main {
   }
 
   private void runDays() {
-    Stream.of(new Day9(), new Day10())
+    Stream.of(new Day9(), new Day10(), new Day11())
           .sorted(Comparator.comparing(Day::number))
           .forEach(this::runDay);
   }
