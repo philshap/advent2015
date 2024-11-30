@@ -56,8 +56,8 @@ public interface Support {
         }, false);
     }
 
-    static List<Integer> integers(String input) {
-        return NUMBER.matcher(input).results().map(MatchResult::group).map(Integer::parseInt).toList();
+    static IntStream integers(String input) {
+        return NUMBER.matcher(input).results().map(MatchResult::group).mapToInt(Integer::parseInt);
     }
 
     static List<Long> longs(String input) {
