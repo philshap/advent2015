@@ -1,34 +1,34 @@
 package advent2015;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class Day {
-    abstract String part1();
-    abstract String part2();
+  abstract String part1();
 
-    final int number;
-    final List<String> input;
+  abstract String part2();
 
-    public int number() {
-        return number;
+  final int number;
+  final List<String> input;
+  final String data;
+
+  public int number() {
+    return number;
+  }
+
+  protected Day(int number) {
+    this.number = number;
+    this.data = getData(number).trim();
+    this.input = Support.splitInput(data);
+  }
+
+  private static final String INPUT_URL = "https://adventofcode.com/2015/day/%d/input";
+
+  String getData(int day) {
+    try {
+      return CachingHttpReader.getData(new URI(INPUT_URL.formatted(day)).toURL());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-
-    protected Day(int number) {
-        this.number = number;
-        this.input = readInput(number);
-    }
-
-    private static final String INPUT_URL = "https://adventofcode.com/2015/day/%d/input";
-
-    static List<String> readInput(int day) {
-        try {
-            URL url = new URI(INPUT_URL.formatted(day)).toURL();
-            return Arrays.asList(CachingHttpReader.getData(url).trim().split("\n"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+  }
 }

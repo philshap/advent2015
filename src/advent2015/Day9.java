@@ -1,17 +1,15 @@
 package advent2015;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class Day9 extends Day {
 
@@ -19,28 +17,26 @@ class Day9 extends Day {
     super(9);
   }
 
-  record Edge(Pair<String, String> fromTo, int distance) {
+  record Edge(Set<String> fromTo, int distance) {
     static Pattern EDGE = Pattern.compile("(.+) to (.+) = (\\d+)");
 
-    static Stream<Edge> fromLine(String line) {
-      return EDGE.matcher(line).results().flatMap(
-          edge ->
-              // Edges are bidirectional.
-              Stream.of(new Edge(Pair.of(edge.group(1), edge.group(2)), Integer.parseInt(edge.group(3))),
-                        new Edge(Pair.of(edge.group(2), edge.group(1)), Integer.parseInt(edge.group(3))))
-      );
+    static Edge fromLine(String line) {
+      return EDGE.matcher(line).results()
+                 .map(edge ->
+                          new Edge(Set.of(edge.group(1), edge.group(2)), Integer.parseInt(edge.group(3))))
+                 .findFirst().orElseThrow();
     }
   }
 
-  record Graph(Map<Pair<String, String>, Integer> adjacent) {
+  record Graph(Map<Set<String>, Integer> adjacent) {
     static Graph from(List<String> input) {
       return new Graph(input.stream()
-                            .flatMap(Edge::fromLine)
+                            .map(Edge::fromLine)
                             .collect(Collectors.toMap(Edge::fromTo, Edge::distance)));
     }
 
     Set<String> allNodes() {
-      return adjacent.keySet().stream().map(Pair::r).collect(Collectors.toSet());
+      return adjacent.keySet().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
   }
 
@@ -55,10 +51,10 @@ class Day9 extends Day {
 
     void extend(Graph graph, Queue<Path> paths) {
       remaining.stream()
-                      .map(next -> new Path(next,
-                                            distance + graph.adjacent.get(Pair.of(last, next)),
-                                            without(remaining, next)))
-          .forEach(paths::add);
+               .map(next -> new Path(next,
+                                     distance + graph.adjacent.get(Set.of(last, next)),
+                                     without(remaining, next)))
+               .forEach(paths::add);
     }
   }
 

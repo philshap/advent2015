@@ -56,7 +56,29 @@ public interface Support {
         }, false);
     }
 
-    static IntStream integers(String input) {
+  static <T> List<List<T>> permutations(List<T> list) {
+    List<List<T>> result = new ArrayList<>();
+    backtrack(result, new ArrayList<>(), list);
+    return result;
+  }
+
+  static <T> void backtrack(List<List<T>> result, List<T> tempList, List<T> list) {
+    if (tempList.size() == list.size()) {
+      result.add(new ArrayList<>(tempList));
+    } else {
+      for (int i = 0; i < list.size(); i++) {
+        if (tempList.contains(list.get(i))) {
+          // element already exists, skip
+          continue;
+        }
+        tempList.add(list.get(i));
+        backtrack(result, tempList, list);
+        tempList.remove(tempList.size() - 1);
+      }
+    }
+  }
+
+  static IntStream integers(String input) {
         return NUMBER.matcher(input).results().map(MatchResult::group).mapToInt(Integer::parseInt);
     }
 
