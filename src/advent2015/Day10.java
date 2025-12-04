@@ -28,7 +28,7 @@ public class Day10 extends Day {
   @Override
   String part1() {
     int times = 40;
-    String sequence = input.get(0);
+    String sequence = input.getFirst();
     while (times-- != 0) {
       sequence = lookAndSay(sequence);
     }
@@ -38,10 +38,19 @@ public class Day10 extends Day {
   @Override
   String part2() {
     int times = 50;
-    String sequence = input.get(0);
+    String sequence = input.getFirst();
     while (times-- != 0) {
       sequence = lookAndSay(sequence);
     }
     return String.valueOf(sequence.length());
+  }
+  static void main() {
+    Day day = new Day10() {
+      @Override
+      String getData() {
+        return "1";
+      }
+    };
+    day.run("82350", "1166642");
   }
 }

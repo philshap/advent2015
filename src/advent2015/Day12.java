@@ -53,12 +53,26 @@ public class Day12 extends Day {
   }
 
   static int jsonSum(String line) {
-    return jsonValue(gson.fromJson(line, JsonObject.class));
+    return jsonValue(gson.fromJson(line, JsonElement.class));
   }
 
   @Override
   String part2() {
     var sum = input.stream().mapToInt(Day12::jsonSum).sum();
     return String.valueOf(sum);
+  }
+
+  static void main() {
+    Day day = new Day12() {
+      @Override
+      String getData() {
+        return """
+            [1,2,3]
+            [1,{"c":"red","b":2},3]
+            {"d":"red","e":[1,2,3,4],"f":5}
+            [1,"red",5]""";
+      }
+    };
+    day.run("33", "16");
   }
 }

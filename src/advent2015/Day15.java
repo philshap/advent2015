@@ -96,7 +96,6 @@ public class Day15 extends Day {
             Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3""";
       }
     };
-    System.out.println(day.part1());
-    System.out.println(day.part2());
+    day.run("62842880", "57600000");
   }
 }

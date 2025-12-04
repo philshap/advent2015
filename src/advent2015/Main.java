@@ -1,42 +1,53 @@
 package advent2015;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Main {
 
-  record PartRun(String result, String duration) {
-    static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("s.SSSSS");
-
-    static PartRun run(Supplier<String> part) {
-      Instant start = Instant.now();
-      String result = part.get();
-      Duration between = Duration.between(start, Instant.now());
-      // https://stackoverflow.com/a/65586659
-      return new PartRun(result, LocalTime.ofNanoOfDay(between.toNanos()).format(FORMAT));
-    }
-  }
-
-  private void runDay(Day day) {
-    PartRun part1 = PartRun.run(day::part1);
-    System.out.printf("day %s part 1: (%s) %s%n", day.number(), part1.duration, part1.result);
-    PartRun part2 = PartRun.run(day::part2);
-    System.out.printf("day %s part 2: (%s) %s%n", day.number(), part2.duration, part2.result);
+  private static Stream<String> days() {
+    return IntStream.range(1, 25).mapToObj("advent2015.Day%s"::formatted);
   }
 
   private void runDays() {
-    Stream.of(new Day9(), new Day10(), new Day11(), new Day12(), new Day13(), new Day14(),
-              new Day15())
-          .sorted(Comparator.comparing(Day::number))
-          .forEach(this::runDay);
+    days()
+        .map(name -> {
+          try {
+            return (Day) Class.forName(name).getDeclaredConstructors()[0].newInstance();
+          } catch (Exception e) {
+            return null;
+          }
+        })
+        .filter(Objects::nonNull)
+        .forEach(Day::run);
   }
 
-  void main() {
-    runDays();
+  private void testDays() {
+    days()
+        .forEach(name -> {
+          try {
+            Method main = Class.forName(name).getDeclaredMethod("main");
+            main.setAccessible(true);
+            main.invoke(null);
+          } catch (Exception e) {
+            // ignore errors
+          }
+        });
+  }
+
+  void main(String[] args) {
+    if (args.length == 1 && args[0].equals("test")) {
+      testDays();
+    } else {
+      runDays();
+    }
   }
 }

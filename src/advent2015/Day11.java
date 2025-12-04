@@ -70,4 +70,14 @@ public class Day11 extends Day {
                  .findFirst()
                  .orElseThrow();
   }
+
+  static void main() {
+    Day day = new Day11() {
+      @Override
+      String getData() {
+        return "abcdefgh";
+      }
+    };
+    day.run("abcdffaa", "abcdffbb");
+  }
 }

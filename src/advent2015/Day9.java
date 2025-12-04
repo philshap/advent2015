@@ -97,4 +97,17 @@ class Day9 extends Day {
     allNodes.forEach(node -> paths.add(new Path(node, allNodes)));
     return String.valueOf(findLongest(paths, graph));
   }
+
+  static void main() {
+    Day day = new Day9() {
+      @Override
+      String getData() {
+        return """
+            London to Dublin = 464
+            London to Belfast = 518
+            Dublin to Belfast = 141""";
+      }
+    };
+    day.run("605", "982");
+  }
 }

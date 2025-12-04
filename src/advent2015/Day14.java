@@ -88,7 +88,6 @@ public class Day14 extends Day {
             """;
       }
     };
-    System.out.println(day.part1());
-    System.out.println(day.part2());
+    day.run("2660", "1564");
   }
 }

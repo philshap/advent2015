@@ -87,6 +87,6 @@ public class Day13 extends Day {
             David would gain 41 happiness units by sitting next to Carol.""";
       }
     };
-    System.out.println(day.part1().equals("330"));
+    day.run("330", "286");
   }
 }
