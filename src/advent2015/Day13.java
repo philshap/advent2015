@@ -71,7 +71,7 @@ public class Day13 extends Day {
   public static void main(String[] args) {
     var day = new Day13() {
       @Override
-      String getData(int day) {
+      String getData() {
         return """
             Alice would gain 54 happiness units by sitting next to Bob.
             Alice would lose 79 happiness units by sitting next to Carol.
