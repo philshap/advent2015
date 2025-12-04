@@ -37,7 +37,7 @@ public interface Support {
         }
         tempList.add(list.get(i));
         backtrack(result, tempList, list);
-        tempList.remove(tempList.size() - 1);
+        tempList.removeLast();
       }
     }
   }
