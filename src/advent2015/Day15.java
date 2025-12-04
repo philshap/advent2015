@@ -51,20 +51,23 @@ public class Day15 extends Day {
       int finalJ = j;
       mixed.add(IntStream.range(0, ingredients.size()).map(i -> ingredients.get(i).contents.get(finalJ) * amounts.get(i)).sum());
     }
-    if (mixed.subList(1, mixed.size() - 1).stream().anyMatch(l -> l < 0)) {
+    if (mixed.stream().anyMatch(l -> l < 0)) {
       return Stream.of();
     }
     return Stream.of(new Ingredient(mixed));
   }
 
+  List<Ingredient> getIngredients() {
+    return Support.partition(Support.integers(data).boxed().toList(), 5).map(Ingredient::new).toList();
+  }
+
   @Override
   String part1() {
-    List<Ingredient> ingredients = Support.partition(Support.integers(data).boxed().toList(), 5).map(Ingredient::new).toList();
-    long bestCookie;
-    bestCookie =
+    List<Ingredient> ingredients = getIngredients();
+    int bestCookie =
         amountCombos(ingredients.size()).stream()
             .flatMap(amounts -> mix(ingredients, amounts))
-            .mapToLong(Ingredient::score)
+            .mapToInt(Ingredient::score)
             .max()
             .orElseThrow();
 
@@ -73,13 +76,11 @@ public class Day15 extends Day {
 
   @Override
   String part2() {
-    List<Ingredient> ingredients = Support.partition(Support.integers(data).boxed().toList(), 5).map(Ingredient::new).toList();
-    long bestCookie;
-    bestCookie =
-        amountCombos(ingredients.size()).stream()
+    List<Ingredient> ingredients = getIngredients();
+    int bestCookie = amountCombos(ingredients.size()).stream()
             .flatMap(amounts -> mix(ingredients, amounts))
             .filter(mix -> mix.calories() == 500)
-            .mapToLong(Ingredient::score)
+            .mapToInt(Ingredient::score)
             .max()
             .orElseThrow();
 
@@ -95,7 +96,6 @@ public class Day15 extends Day {
             Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3""";
       }
     };
-    // 62842880
     System.out.println(day.part1());
     System.out.println(day.part2());
   }
