@@ -36,7 +36,7 @@ public class Main {
           .forEach(this::runDay);
   }
 
-  public static void main(String[] args) {
-    new Main().runDays();
+  void main() {
+    runDays();
   }
 }

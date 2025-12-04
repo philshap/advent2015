@@ -78,7 +78,7 @@ public class Day14 extends Day {
     return String.valueOf(reindeer.stream().mapToInt(Reindeer::score).max().orElseThrow());
   }
 
-  public static void main(String[] args) {
+  static void main() {
     var day = new Day14() {
       @Override
       String getData() {

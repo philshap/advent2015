@@ -41,8 +41,8 @@ public class Day13 extends Day {
 
     int happiness(List<String> strings) {
       return Stream.concat(Support.partition(strings, 2, 1)
-                                  .map(pair -> Set.of(pair.get(0), pair.get(1))),
-                           Stream.of(Set.of(strings.get(0), strings.get(strings.size() - 1))))
+                                  .map(pair -> Set.of(pair.getFirst(), pair.get(1))),
+                           Stream.of(Set.of(strings.getFirst(), strings.getLast())))
                    .mapToInt(adjacent::get)
                    .sum();
     }
@@ -68,7 +68,7 @@ public class Day13 extends Day {
     return String.valueOf(graph.optimal());
   }
 
-  public static void main(String[] args) {
+  static void main() {
     var day = new Day13() {
       @Override
       String getData() {

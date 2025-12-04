@@ -26,7 +26,7 @@ public class Day15 extends Day {
     for (int i = 1; i < target - (remaining - 1); i++) {
       current.add(i);
       findCombinations(remaining - 1, target - i, current, result);
-      current.remove(current.size() - 1);
+      current.removeLast();
     }
   }
 
