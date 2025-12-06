@@ -3,10 +3,14 @@ package advent2015;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public interface Support {
   Pattern NUMBER = Pattern.compile("(-?\\d+)");
@@ -40,6 +44,33 @@ public interface Support {
         tempList.removeLast();
       }
     }
+  }
+
+  static <T> Stream<List<T>> combinations(List<T> data, int size) {
+    final long N = 1L << data.size();
+    return StreamSupport.stream(new Spliterators.AbstractSpliterator<>(N, Spliterator.DISTINCT & Spliterator.IMMUTABLE) {
+      long i = 1;
+
+      @Override
+      public boolean tryAdvance(Consumer<? super List<T>> action) {
+        if (i < N) {
+          int comboLength = Long.bitCount(i);
+          if (comboLength == size) {
+            List<T> out = new ArrayList<>(comboLength);
+            for (int bit = 0; bit < data.size(); bit++) {
+              if ((i & (1L << bit)) != 0) {
+                out.add(data.get(bit));
+              }
+            }
+            action.accept(out);
+          }
+          ++i;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }, false);
   }
 
   static IntStream integers(String input) {
