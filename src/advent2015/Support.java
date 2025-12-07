@@ -2,6 +2,7 @@ package advent2015;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -79,5 +80,19 @@ public interface Support {
 
   static List<String> splitInput(String input) {
     return Arrays.asList(input.split("\n"));
+  }
+
+  @SafeVarargs
+  static <T> Stream<List<T>> cartesianProduct(List<T>... collections) {
+    return Arrays.stream(collections)
+        .reduce(
+            Stream.of(List.of()),
+            (acc, collection) -> acc.flatMap(list ->
+                collection.stream().map(element -> {
+                  List<T> newList = new ArrayList<>(list);
+                  newList.add(element);
+                  return newList;
+                })),
+            Stream::concat);
   }
 }
