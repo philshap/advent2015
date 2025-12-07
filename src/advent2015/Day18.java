@@ -13,52 +13,48 @@ public class Day18 extends Day {
 
   int steps = 100;
 
-  record Lights(Map<Pos, Character> grid) {
-    Lights(List<String> input) {
-      this(Pos.collectByPos(input));
+  record Lights(Map<Pos, Character> grid, Set<Pos> alwaysOn) {
+    Lights(List<String> input, Set<Pos> alwaysOn) {
+      this(Pos.collectByPos(input), alwaysOn);
     }
     int neighbors(Pos pos) {
       return (int) Pos.EDGES.stream().map(pos::plus).filter(p -> grid.getOrDefault(p, '.') == '#').count();
     }
-    Lights next(Set<Pos> alwaysOn) {
+    Lights next() {
       Map<Pos, Character> next = new HashMap<>();
-      grid.forEach((pos, character) -> {
+      grid.forEach((pos, ch) -> {
         int neighbors = neighbors(pos);
         boolean isOn;
         if (alwaysOn.contains(pos)) {
           isOn = true;
-        } else if (character == '#') {
+        } else if (ch == '#') {
           isOn = neighbors == 2 || neighbors == 3;
         } else {
           isOn = neighbors == 3;
         }
         next.put(pos, isOn ? '#' : '.');
       });
-      return new Lights(next);
+      return new Lights(next, alwaysOn);
     }
+  }
+
+  private long countLights(Lights initial) {
+    Lights lights = Stream.iterate(initial, Lights::next).skip(steps).findFirst().orElseThrow();
+    return lights.grid.values().stream().filter(ch -> ch == '#').count();
   }
 
   @Override
   String part1() {
-    Lights lights =
-        Stream.iterate(new Lights(input), l -> l.next(Set.of()))
-        .skip(steps)
-        .findFirst().orElseThrow();
-    long count = lights.grid.values().stream().filter(ch -> ch == '#').count();
+    long count = countLights(new Lights(input, Set.of()));
     return String.valueOf(count);
   }
 
   @Override
   String part2() {
-    Lights initial = new Lights(input);
-    int maxX = initial.grid.keySet().stream().map(Pos::x).max(Integer::compareTo).orElseThrow();
-    int maxY = initial.grid.keySet().stream().map(Pos::y).max(Integer::compareTo).orElseThrow();
-    Set<Pos> alwaysOn = Set.of(new Pos(0, 0), new Pos(0, maxY), new Pos(maxX, 0), new Pos(maxX, maxY));
-    Lights lights =
-        Stream.iterate(initial, l -> l.next(alwaysOn))
-            .skip(steps)
-            .findFirst().orElseThrow();
-    long count = lights.grid.values().stream().filter(ch -> ch == '#').count();
+    int maxX = input.getFirst().length() - 1;
+    int maxY = input.size() - 1;
+    Lights initial = new Lights(input, Set.of(new Pos(0, 0), new Pos(0, maxY), new Pos(maxX, 0), new Pos(maxX, maxY)));
+    long count = countLights(initial);
     return String.valueOf(count);
   }
 
