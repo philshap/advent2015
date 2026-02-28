@@ -1,5 +1,7 @@
 package advent2015;
 
+import java.util.stream.Stream;
+
 public class Day10 extends Day {
   protected Day10() {
     super(10);
@@ -27,23 +29,18 @@ public class Day10 extends Day {
 
   @Override
   String part1() {
-    int times = 40;
-    String sequence = input.getFirst();
-    while (times-- != 0) {
-      sequence = lookAndSay(sequence);
-    }
-    return String.valueOf(sequence.length());
+    int length = Stream.iterate(input.getFirst(), this::lookAndSay).skip(40)
+        .findFirst().orElseThrow().length();
+    return String.valueOf(length);
   }
 
   @Override
   String part2() {
-    int times = 50;
-    String sequence = input.getFirst();
-    while (times-- != 0) {
-      sequence = lookAndSay(sequence);
-    }
-    return String.valueOf(sequence.length());
+    int length = Stream.iterate(input.getFirst(), this::lookAndSay).skip(50)
+        .findFirst().orElseThrow().length();
+    return String.valueOf(length);
   }
+
   static void main() {
     Day day = new Day10() {
       @Override

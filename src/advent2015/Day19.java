@@ -38,11 +38,10 @@ public class Day19 extends Day {
   @Override
   String part2() {
     String[] split = data.split("\n\n");
-    // replace in reverse; sort longest replacements first.
+    // Replace in reverse.
     var replacements = Support.splitInput(split[0]).stream()
         .map(line -> line.split(" => "))
         .map(line -> Pair.of(line[1], line[0]))
-        .sorted(Comparator.comparingInt(p -> p.r().length()))
         .toList();
     String molecule = split[1];
     // Sort queue with shortest molecules first.
