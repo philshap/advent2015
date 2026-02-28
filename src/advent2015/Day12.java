@@ -2,7 +2,6 @@ package advent2015;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 public class Day12 extends Day {
   protected Day12() {
