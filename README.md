@@ -11,7 +11,7 @@ $ clj -X main/-main
 
 - compile:
 ```shell
-find src -name *.java -not -name *Day12.java | xargs javac -d out
+find src -name *.java | xargs javac -d out
 ```
 
 - run

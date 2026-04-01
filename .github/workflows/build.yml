@@ -18,7 +18,7 @@ jobs:
 
       - name: Compile
         # Exclude Day12 as it uses gson library
-        run: find src -name \*.java -not -name \*Day12.java | xargs javac -d out
+        run: find src -name \*.java | xargs javac -d out
 
       - name: Run tests
         run: java -cp out advent2015.Main test
