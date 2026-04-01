@@ -1,8 +1,5 @@
 package advent2015;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-
 public class Day12 extends Day {
   protected Day12() {
     super(12);
@@ -14,45 +11,32 @@ public class Day12 extends Day {
     return String.valueOf(sum);
   }
 
-  static Gson gson = new Gson();
-
-  static boolean isRedValue(JsonElement element) {
-    return element.isJsonPrimitive() && element.getAsString().equals("red");
+  static boolean isRedValue(Json.Element element) {
+    return "red".equals(element.getAsString());
   }
 
-  static int jsonValue(JsonElement element) {
-    if (element.isJsonArray()) {
-      int sum = 0;
-      for (JsonElement jsonElement : element.getAsJsonArray()) {
-        sum += jsonValue(jsonElement);
-      }
-      return sum;
+  static int jsonValue(Json.Element element) {
+    var array = element.getAsJsonArray();
+    if (array != null) {
+      return array.stream().mapToInt(Day12::jsonValue).sum();
     }
-    if (element.isJsonObject()) {
-      var object = element.getAsJsonObject();
-      int sum = 0;
-      for (var entry : object.entrySet()) {
-        var value = entry.getValue();
-        if (isRedValue(value)) {
-          return 0;
-        }
-        sum += jsonValue(value);
-      }
-      return sum;
-    }
-    if (element.isJsonPrimitive()) {
-      var primitive = element.getAsJsonPrimitive();
-      if (primitive.isNumber()) {
-        return primitive.getAsInt();
-      } else {
+    var object = element.getAsJsonObject();
+    if (object != null) {
+      var values = object.getMap().values();
+      if (values.stream().anyMatch(Day12::isRedValue)) {
         return 0;
       }
+      return values.stream().mapToInt(Day12::jsonValue).sum();
+    }
+    var primitive = element.getAsJsonPrimitive();
+    if (primitive != null && primitive.isNumber()) {
+      return primitive.getAsInt();
     }
     return 0;
   }
 
   static int jsonSum(String line) {
-    return jsonValue(gson.fromJson(line, JsonElement.class));
+    return jsonValue(Json.Element.fromJson(line));
   }
 
   @Override
